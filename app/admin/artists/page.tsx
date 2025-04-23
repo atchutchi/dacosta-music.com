@@ -1,10 +1,15 @@
+"use client"
+
 import Link from "next/link"
 import { createServerClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Pencil, Trash2 } from "lucide-react"
 
-export default async function ArtistsPage() {
+// Adicionar esta configuração para evitar pré-renderização durante o build
+export const dynamic = "force-dynamic"
+
+export default async function ArtistsAdminPage() {
   const supabase = createServerClient()
 
   const { data: artists, error } = await supabase.from("artists").select("*").order("name")

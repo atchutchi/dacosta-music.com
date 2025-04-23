@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Database {
   public: {
@@ -211,9 +205,3 @@ export interface Database {
     }
   }
 }
-
-export type Artist = Database["public"]["Tables"]["artists"]["Row"]
-export type Event = Database["public"]["Tables"]["events"]["Row"]
-export type Album = Database["public"]["Tables"]["albums"]["Row"]
-export type Track = Database["public"]["Tables"]["tracks"]["Row"]
-export type LiveSet = Database["public"]["Tables"]["live_sets"]["Row"]

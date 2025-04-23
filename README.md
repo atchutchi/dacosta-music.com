@@ -238,7 +238,7 @@ O site foi projetado com foco na experiência do usuário, seguindo os seguintes
    - Funcionalidades offline
    - Notificações push
 
-## Como Executar o Projeto
+## Como Executar o Projeto Localmente
 
 1. Clone o repositório:
    \`\`\`bash
@@ -268,6 +268,178 @@ O site foi projetado com foco na experiência do usuário, seguindo os seguintes
    \`\`\`
 
 5. Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
+
+## Guia de Migração para cPanel
+
+### Pré-requisitos para Migração
+
+1. **Conta de Hospedagem com cPanel**: Você precisa ter acesso a uma conta de hospedagem que ofereça cPanel.
+2. **Node.js no Servidor**: O servidor de hospedagem deve suportar Node.js (versão 18.x ou superior).
+3. **Suporte a HTTPS**: Recomendado para segurança, especialmente para funcionalidades de autenticação.
+4. **Banco de Dados Supabase**: Suas tabelas e dados já devem estar configurados no Supabase.
+
+### Passo 1: Preparar o Projeto para Produção
+
+1. **Construir o Projeto**:
+   \`\`\`bash
+   npm run build
+   \`\`\`
+   Isso criará uma versão otimizada do seu site na pasta `.next`.
+
+2. **Verificar se não há erros de build**:
+   - Certifique-se de que o build foi concluído sem erros.
+   - Se houver erros relacionados à autenticação durante o build, verifique se todas as páginas administrativas têm a configuração `export const dynamic = 'force-dynamic'`.
+
+3. **Testar localmente a versão de produção**:
+   \`\`\`bash
+   npm run start
+   \`\`\`
+   Acesse `http://localhost:3000` para verificar se tudo está funcionando corretamente.
+
+### Passo 2: Exportar o Projeto
+
+1. **Criar um arquivo de produção**:
+   Crie um arquivo ZIP contendo os seguintes diretórios e arquivos:
+   \`\`\`
+   .next/
+   public/
+   package.json
+   package-lock.json (ou yarn.lock)
+   next.config.js
+   .env.production (com suas variáveis de ambiente)
+   \`\`\`
+
+   \`\`\`bash
+   zip -r dacosta-music-production.zip .next/ public/ package.json package-lock.json next.config.js .env.production
+   \`\`\`
+
+### Passo 3: Configurar o cPanel
+
+1. **Acesse o cPanel** da sua hospedagem usando as credenciais fornecidas pelo seu provedor.
+
+2. **Configurar Node.js**:
+   - No cPanel, procure por "Setup Node.js App" ou "Node.js Selector".
+   - Crie uma nova aplicação Node.js:
+     - **Nome da Aplicação**: `dacosta-music`
+     - **Versão do Node.js**: Selecione a versão mais recente disponível (preferencialmente 18.x ou superior)
+     - **Modo de Inicialização**: Selecione "Production"
+     - **Comando de Inicialização**: `npm start`
+     - **Diretório da Aplicação**: Escolha o diretório onde deseja instalar o site (geralmente algo como `public_html/dacosta-music`)
+
+3. **Configurar Domínio**:
+   - No cPanel, vá para "Domains" ou "Subdomains".
+   - Configure o domínio principal ou crie um subdomínio para o site.
+   - Aponte o domínio/subdomínio para o diretório da aplicação Node.js.
+
+### Passo 4: Fazer Upload e Instalar o Projeto
+
+1. **Fazer Upload do Arquivo ZIP**:
+   - No cPanel, vá para "File Manager".
+   - Navegue até o diretório da aplicação Node.js que você configurou.
+   - Faça upload do arquivo ZIP que você criou.
+
+2. **Extrair o Arquivo ZIP**:
+   - No File Manager, clique com o botão direito no arquivo ZIP e selecione "Extract".
+   - Extraia o conteúdo para o diretório atual.
+
+3. **Instalar Dependências**:
+   - No cPanel, vá para "Terminal" ou "SSH Access".
+   - Navegue até o diretório da aplicação:
+     \`\`\`bash
+     cd public_html/dacosta-music
+     \`\`\`
+   - Instale as dependências:
+     \`\`\`bash
+     npm install --production
+     \`\`\`
+
+### Passo 5: Configurar Variáveis de Ambiente
+
+1. **Criar arquivo .env.production**:
+   - No File Manager, crie ou edite o arquivo `.env.production` no diretório da aplicação.
+   - Adicione todas as variáveis de ambiente necessárias:
+     \`\`\`
+     NEXT_PUBLIC_SUPABASE_URL=sua_url_do_supabase
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon_do_supabase
+     SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role_do_supabase
+     \`\`\`
+
+2. **Configurar Variáveis de Ambiente no cPanel**:
+   - No cPanel, vá para "Setup Node.js App".
+   - Selecione sua aplicação.
+   - Na seção "Environment Variables", adicione as mesmas variáveis de ambiente.
+
+### Passo 6: Iniciar a Aplicação
+
+1. **Reiniciar a Aplicação Node.js**:
+   - No cPanel, vá para "Setup Node.js App".
+   - Selecione sua aplicação.
+   - Clique em "Restart" ou "Start" se a aplicação não estiver em execução.
+
+2. **Verificar Logs**:
+   - No cPanel, vá para "Setup Node.js App".
+   - Selecione sua aplicação.
+   - Clique em "Log" para verificar se há erros durante a inicialização.
+
+### Passo 7: Configurar HTTPS (Recomendado)
+
+1. **Instalar Certificado SSL**:
+   - No cPanel, procure por "SSL/TLS" ou "Let's Encrypt SSL".
+   - Siga as instruções para instalar um certificado SSL para seu domínio.
+
+2. **Forçar HTTPS**:
+   - No cPanel, vá para "Setup Node.js App".
+   - Selecione sua aplicação.
+   - Ative a opção "Force HTTPS" se disponível.
+
+### Passo 8: Verificações Pós-Migração
+
+1. **Testar o Site**:
+   - Acesse o site através do domínio configurado.
+   - Verifique se todas as páginas estão carregando corretamente.
+   - Teste a autenticação e as funcionalidades administrativas.
+   - Verifique se as imagens e vídeos estão sendo exibidos corretamente.
+
+2. **Verificar Responsividade**:
+   - Teste o site em diferentes dispositivos e tamanhos de tela.
+   - Certifique-se de que o design responsivo está funcionando como esperado.
+
+3. **Verificar Performance**:
+   - Use ferramentas como Google PageSpeed Insights para avaliar a performance do site.
+   - Faça ajustes conforme necessário para melhorar o tempo de carregamento.
+
+### Passo 9: Configurar Backup (Recomendado)
+
+1. **Configurar Backup Automático**:
+   - No cPanel, procure por "Backup" ou "Backup Wizard".
+   - Configure backups automáticos para o diretório da aplicação e banco de dados.
+
+2. **Backup Manual**:
+   - Periodicamente, faça backups manuais do site e do banco de dados.
+   - Armazene os backups em um local seguro.
+
+### Informações Necessárias para Migração
+
+Para realizar a migração com sucesso, você precisará fornecer:
+
+1. **Credenciais do cPanel**:
+   - URL do cPanel
+   - Nome de usuário
+   - Senha
+
+2. **Credenciais do Supabase**:
+   - URL do Supabase
+   - Chave anônima do Supabase
+   - Chave de serviço do Supabase
+
+3. **Informações do Domínio**:
+   - Nome do domínio ou subdomínio que será usado
+   - Configurações de DNS (se necessário)
+
+4. **Requisitos Técnicos**:
+   - Versão do Node.js disponível no servidor
+   - Limites de recursos (memória, CPU, etc.)
+   - Suporte a SSL/HTTPS
 
 ## Contribuição
 

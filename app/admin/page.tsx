@@ -1,8 +1,13 @@
+"use client"
+
 import { createServerClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Calendar, Music, Disc } from "lucide-react"
 
-export default async function AdminDashboard() {
+// Adicionar esta configuração para evitar pré-renderização durante o build
+export const dynamic = "force-dynamic"
+
+export default async function AdminPage() {
   const supabase = createServerClient()
 
   // Buscar estatísticas

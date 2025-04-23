@@ -3,6 +3,9 @@ import { Toaster } from "@/components/ui/toaster"
 import AdminSidebar from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
 
+// Adicionar esta configuração para evitar pré-renderização durante o build
+export const dynamic = "force-dynamic"
+
 export default function AdminLayout({
   children,
 }: {

@@ -11,6 +11,9 @@ import { Pagination } from "@/components/ui/pagination"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { useRouter } from "next/navigation"
 
+// Adicionar esta configuração para evitar pré-renderização durante o build
+export const dynamic = "force-dynamic"
+
 export default function AlbumsPage() {
   const [albums, setAlbums] = useState<any[]>([])
   const [artists, setArtists] = useState<any[]>([])

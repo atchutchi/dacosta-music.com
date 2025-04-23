@@ -1,5 +1,8 @@
 "use client"
 
+// Adicionar esta configuração para evitar pré-renderização durante o build
+export const dynamic = "force-dynamic"
+
 import type React from "react"
 
 import { useState } from "react"

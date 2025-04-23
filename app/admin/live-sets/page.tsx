@@ -1,5 +1,8 @@
 "use client"
 
+// Adicionar esta configuração para evitar pré-renderização durante o build
+export const dynamic = "force-dynamic"
+
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { createClientClient } from "@/lib/supabase/client"
