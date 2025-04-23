@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Instagram, Twitter, Globe, ArrowRight } from "lucide-react"
+import { Instagram, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -30,7 +30,7 @@ export default function RosterSection() {
     {
       id: "caiiro",
       name: "Caiiro",
-      logo: "/images/caiiro-logo-white.png",
+      logo: "/images/caiiro-white-logo.png",
       image: "/images/caiiro-new-photo.jpeg",
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa's most prominent electronic music exports. With a global fan base and standout performances across Europe, the Americas, and beyond, Caiiro continues to shape the narrative of modern African dance music.",
       socials: {
@@ -130,7 +130,7 @@ export default function RosterSection() {
         <Tabs defaultValue="artists" className="w-full">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
             <TabsTrigger value="artists">Individual Artists</TabsTrigger>
-            <TabsTrigger value="b2b">B2B Concept</TabsTrigger>
+            <TabsTrigger value="b3b">B3B Concept</TabsTrigger>
           </TabsList>
 
           <TabsContent value="artists" className="space-y-8">
@@ -199,28 +199,12 @@ export default function RosterSection() {
                         transition={{ delay: i * 0.2 + 0.5, duration: 0.5 }}
                       >
                         <a
-                          href={artist.socials.instagram}
+                          href="https://www.instagram.com/dacosta_music/"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-white/70 hover:text-white transition-colors duration-300"
                         >
                           <Instagram className="h-5 w-5" />
-                        </a>
-                        <a
-                          href={artist.socials.twitter}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-white/70 hover:text-white transition-colors duration-300"
-                        >
-                          <Twitter className="h-5 w-5" />
-                        </a>
-                        <a
-                          href={artist.socials.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-white/70 hover:text-white transition-colors duration-300"
-                        >
-                          <Globe className="h-5 w-5" />
                         </a>
                       </motion.div>
                     </CardContent>
@@ -238,7 +222,7 @@ export default function RosterSection() {
             </div>
           </TabsContent>
 
-          <TabsContent value="b2b">
+          <TabsContent value="b3b">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <Card className="bg-black border border-white/10">
                 <CardContent className="p-8">

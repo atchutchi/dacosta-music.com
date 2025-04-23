@@ -20,7 +20,8 @@ interface AdminHeaderProps {
   user: User
 }
 
-export default function AdminHeader({ user }: AdminHeaderProps) {
+// Alterando de export default para export const
+export const AdminHeader = ({ user }: AdminHeaderProps) => {
   const router = useRouter()
   const supabase = createClient()
   const [isLoggingOut, setIsLoggingOut] = useState(false)

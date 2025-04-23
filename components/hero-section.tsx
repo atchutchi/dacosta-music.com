@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -37,10 +38,14 @@ export default function HeroSection() {
             elevate African electronic music.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button className="bg-white text-black hover:bg-white/90 min-w-[150px]">Our Roster</Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white/10 min-w-[150px]">
-              Contact Us
-            </Button>
+            <Link href="/#roster">
+              <Button className="bg-white text-black hover:bg-white/90 min-w-[150px]">Our Roster</Button>
+            </Link>
+            <Link href="/#contact">
+              <Button variant="outline" className="border-white text-white hover:bg-white/10 min-w-[150px]">
+                Contact Us
+              </Button>
+            </Link>
           </div>
         </div>
 

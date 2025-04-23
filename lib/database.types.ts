@@ -3,122 +3,51 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export interface Database {
   public: {
     Tables: {
-      albums: {
-        Row: {
-          id: string
-          artist_id: string
-          title: string
-          release_year: number | null
-          cover_url: string | null
-          album_type: "album" | "ep" | "single"
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          artist_id: string
-          title: string
-          release_year?: number | null
-          cover_url?: string | null
-          album_type?: "album" | "ep" | "single"
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          artist_id?: string
-          title?: string
-          release_year?: number | null
-          cover_url?: string | null
-          album_type?: "album" | "ep" | "single"
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      artist_stats: {
-        Row: {
-          id: string
-          artist_id: string
-          streams: number
-          followers: number
-          monthly_listeners: number
-          youtube_views: number
-          youtube_subscribers: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          artist_id: string
-          streams?: number
-          followers?: number
-          monthly_listeners?: number
-          youtube_views?: number
-          youtube_subscribers?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          artist_id?: string
-          streams?: number
-          followers?: number
-          monthly_listeners?: number
-          youtube_views?: number
-          youtube_subscribers?: number
-          created_at?: string
-          updated_at?: string
-        }
-      }
       artists: {
         Row: {
           id: string
+          created_at: string
           name: string
           slug: string
           bio: string | null
-          logo_url: string | null
           photo_url: string | null
-          created_at: string
-          updated_at: string
+          logo_url: string | null
+          social_instagram: string | null
+          social_twitter: string | null
+          social_website: string | null
+          featured: boolean
         }
         Insert: {
           id?: string
+          created_at?: string
           name: string
           slug: string
           bio?: string | null
-          logo_url?: string | null
           photo_url?: string | null
-          created_at?: string
-          updated_at?: string
+          logo_url?: string | null
+          social_instagram?: string | null
+          social_twitter?: string | null
+          social_website?: string | null
+          featured?: boolean
         }
         Update: {
           id?: string
+          created_at?: string
           name?: string
           slug?: string
           bio?: string | null
-          logo_url?: string | null
           photo_url?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      event_artists: {
-        Row: {
-          event_id: string
-          artist_id: string
-        }
-        Insert: {
-          event_id: string
-          artist_id: string
-        }
-        Update: {
-          event_id?: string
-          artist_id?: string
+          logo_url?: string | null
+          social_instagram?: string | null
+          social_twitter?: string | null
+          social_website?: string | null
+          featured?: boolean
         }
       }
       events: {
         Row: {
           id: string
+          created_at: string
           title: string
           description: string | null
           location: string
@@ -126,11 +55,11 @@ export interface Database {
           end_date: string | null
           image_url: string | null
           ticket_url: string | null
-          created_at: string
-          updated_at: string
+          featured: boolean
         }
         Insert: {
           id?: string
+          created_at?: string
           title: string
           description?: string | null
           location: string
@@ -138,11 +67,11 @@ export interface Database {
           end_date?: string | null
           image_url?: string | null
           ticket_url?: string | null
-          created_at?: string
-          updated_at?: string
+          featured?: boolean
         }
         Update: {
           id?: string
+          created_at?: string
           title?: string
           description?: string | null
           location?: string
@@ -150,103 +79,135 @@ export interface Database {
           end_date?: string | null
           image_url?: string | null
           ticket_url?: string | null
-          created_at?: string
-          updated_at?: string
+          featured?: boolean
         }
       }
-      live_sets: {
+      albums: {
         Row: {
           id: string
-          artist_id: string
-          title: string
-          video_url: string
-          event_name: string | null
-          performance_date: string | null
           created_at: string
-          updated_at: string
+          title: string
+          artist_id: string
+          release_date: string
+          cover_url: string | null
+          description: string | null
+          featured: boolean
         }
         Insert: {
           id?: string
-          artist_id: string
-          title: string
-          video_url: string
-          event_name?: string | null
-          performance_date?: string | null
           created_at?: string
-          updated_at?: string
+          title: string
+          artist_id: string
+          release_date: string
+          cover_url?: string | null
+          description?: string | null
+          featured?: boolean
         }
         Update: {
           id?: string
-          artist_id?: string
+          created_at?: string
           title?: string
-          video_url?: string
-          event_name?: string | null
-          performance_date?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      profiles: {
-        Row: {
-          id: string
-          username: string | null
-          full_name: string | null
-          avatar_url: string | null
-          role: "admin" | "artist" | "user"
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id: string
-          username?: string | null
-          full_name?: string | null
-          avatar_url?: string | null
-          role?: "admin" | "artist" | "user"
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          username?: string | null
-          full_name?: string | null
-          avatar_url?: string | null
-          role?: "admin" | "artist" | "user"
-          created_at?: string
-          updated_at?: string
+          artist_id?: string
+          release_date?: string
+          cover_url?: string | null
+          description?: string | null
+          featured?: boolean
         }
       }
       tracks: {
         Row: {
           id: string
-          album_id: string
-          title: string
-          duration: number | null
-          featuring: string | null
-          track_url: string | null
           created_at: string
-          updated_at: string
+          title: string
+          album_id: string | null
+          artist_id: string
+          duration: number
+          audio_url: string | null
+          track_number: number | null
+          featured: boolean
         }
         Insert: {
           id?: string
-          album_id: string
-          title: string
-          duration?: number | null
-          featuring?: string | null
-          track_url?: string | null
           created_at?: string
-          updated_at?: string
+          title: string
+          album_id?: string | null
+          artist_id: string
+          duration: number
+          audio_url?: string | null
+          track_number?: number | null
+          featured?: boolean
         }
         Update: {
           id?: string
-          album_id?: string
-          title?: string
-          duration?: number | null
-          featuring?: string | null
-          track_url?: string | null
           created_at?: string
-          updated_at?: string
+          title?: string
+          album_id?: string | null
+          artist_id?: string
+          duration?: number
+          audio_url?: string | null
+          track_number?: number | null
+          featured?: boolean
+        }
+      }
+      live_sets: {
+        Row: {
+          id: string
+          created_at: string
+          title: string
+          artist_id: string
+          event_id: string | null
+          date: string
+          duration: number
+          audio_url: string | null
+          cover_url: string | null
+          description: string | null
+          featured: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          title: string
+          artist_id: string
+          event_id?: string | null
+          date: string
+          duration: number
+          audio_url?: string | null
+          cover_url?: string | null
+          description?: string | null
+          featured?: boolean
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          title?: string
+          artist_id?: string
+          event_id?: string | null
+          date?: string
+          duration?: number
+          audio_url?: string | null
+          cover_url?: string | null
+          description?: string | null
+          featured?: boolean
         }
       }
     }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
+
+export type Artist = Database["public"]["Tables"]["artists"]["Row"]
+export type Event = Database["public"]["Tables"]["events"]["Row"]
+export type Album = Database["public"]["Tables"]["albums"]["Row"]
+export type Track = Database["public"]["Tables"]["tracks"]["Row"]
+export type LiveSet = Database["public"]["Tables"]["live_sets"]["Row"]

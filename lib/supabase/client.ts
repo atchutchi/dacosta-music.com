@@ -5,3 +5,6 @@ import type { Database } from "@/lib/database.types"
 export const createClient = () => {
   return createClientComponentClient<Database>()
 }
+
+// Alias para manter compatibilidade com código existente
+export const createClientClient = createClient

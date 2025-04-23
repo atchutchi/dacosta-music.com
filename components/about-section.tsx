@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function AboutSection() {
   return (
@@ -34,7 +35,9 @@ export default function AboutSection() {
                 </p>
               </div>
             </div>
-            <Button className="mt-8 bg-white text-black hover:bg-white/90">Learn More</Button>
+            <Link href="/artists">
+              <Button className="mt-8 bg-white text-black hover:bg-white/90">Learn More</Button>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
