@@ -57,12 +57,12 @@ export default function ArtistsPage() {
                 <img
                   src={
                     artist.id === "caiiro"
-                      ? "/images/caiiro-white-logo.png"
+                      ? "/images/caiiro-logo-branco.png"
                       : artist.id === "dacapo"
-                        ? "/images/Da-Capo-logo-white.png"
-                        : "/images/enoo-napa-logo-white.png"
+                        ? "/images/logo-branco-da-capo.png"
+                        : "/images/logo-branco-enoo-napa.png"
                   }
-                  alt={artist.name}
+                  alt={`${artist.name} logo`}
                   className="h-full object-contain"
                 />
               </div>

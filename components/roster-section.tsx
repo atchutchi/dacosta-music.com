@@ -1,13 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Instagram, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import Image from "next/image"
 
 interface Artist {
   id: string
@@ -30,7 +29,7 @@ export default function RosterSection() {
     {
       id: "caiiro",
       name: "Caiiro",
-      logo: "/images/caiiro-white-logo.png",
+      logo: "/images/caiiro-logo-branco.png",
       image: "/images/caiiro-new-photo.jpeg",
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa's most prominent electronic music exports. With a global fan base and standout performances across Europe, the Americas, and beyond, Caiiro continues to shape the narrative of modern African dance music.",
       socials: {
@@ -42,7 +41,7 @@ export default function RosterSection() {
     {
       id: "dacapo",
       name: "Da Capo",
-      logo: "/images/Da-Capo-logo-white.png",
+      logo: "/images/logo-branco-da-capo.png",
       image: "/images/dj-white-shirt.png",
       bio: "A visionary in Afro House and Deep Tech, Da Capo is known for his rich, layered productions and genre-defining DJ sets. A true craftsman of sound, his artistry bridges underground energy with refined musical storytelling—earning him global recognition and a dedicated audience.",
       socials: {
@@ -54,7 +53,7 @@ export default function RosterSection() {
     {
       id: "enoonapa",
       name: "Enoo Napa",
-      logo: "/images/enoo-napa-logo-white.png",
+      logo: "/images/logo-branco-enoo-napa.png",
       image: "/images/dj-red-light.png",
       bio: "Enoo Napa delivers cutting-edge Afro-Electronic music with a signature edge. Fusing raw energy with intricate production, his work is celebrated in clubs and festivals around the world. Bold, futuristic, and uniquely African—Enoo's sound commands attention and respect.",
       socials: {
@@ -135,81 +134,35 @@ export default function RosterSection() {
 
           <TabsContent value="artists" className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {artists.map((artist, i) => (
-                <motion.div
-                  key={artist.id}
-                  custom={i}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover="hover"
-                  variants={cardVariants}
-                  onMouseEnter={() => setHoveredArtist(artist.id)}
-                  onMouseLeave={() => setHoveredArtist(null)}
-                >
-                  <Card className="bg-black border border-white/10 overflow-hidden artist-card cursor-pointer h-full">
-                    <div className="h-80 overflow-hidden relative">
-                      <motion.img
-                        src={artist.image || "/placeholder.svg"}
-                        alt={artist.name}
-                        className="w-full h-full object-cover"
-                        variants={imageVariants}
-                        initial="initial"
-                        animate={hoveredArtist === artist.id ? "hover" : "normal"}
-                      />
-                      <motion.div
-                        className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: hoveredArtist === artist.id ? 1 : 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Link href={`/artists/${artist.id}`}>
-                          <Button className="bg-white text-black hover:bg-white/90">
-                            View Profile <ArrowRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </Link>
-                      </motion.div>
-                    </div>
-                    <CardContent className="p-6">
-                      <motion.div
-                        className="mb-4 h-12 flex items-center"
-                        initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: i * 0.2 + 0.3, duration: 0.5 }}
-                      >
-                        <Image
-                          src={artist.logo || "/placeholder.svg"}
-                          alt={artist.name}
-                          width={120}
-                          height={40}
-                          className="h-auto max-h-12 w-auto object-contain"
-                        />
-                      </motion.div>
-                      <motion.p
-                        className="text-white/70 line-clamp-3 mb-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: i * 0.2 + 0.4, duration: 0.5 }}
-                      >
-                        {artist.bio}
-                      </motion.p>
-                      <motion.div
-                        className="flex space-x-3"
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: i * 0.2 + 0.5, duration: 0.5 }}
-                      >
-                        <a
-                          href="https://www.instagram.com/dacosta_music/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-white/70 hover:text-white transition-colors duration-300"
-                        >
-                          <Instagram className="h-5 w-5" />
-                        </a>
-                      </motion.div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+              {artists.map((artist) => (
+                <div key={artist.id} className="group">
+                  <div className="overflow-hidden rounded-lg mb-4">
+                    <img
+                      src={artist.image || "/placeholder.svg"}
+                      alt={artist.name}
+                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="h-12 mb-4 flex items-center">
+                    <img
+                      src={
+                        artist.id === "caiiro"
+                          ? "/images/caiiro-logo-branco.png"
+                          : artist.id === "dacapo"
+                            ? "/images/logo-branco-da-capo.png"
+                            : "/images/logo-branco-enoo-napa.png"
+                      }
+                      alt={`${artist.name} logo`}
+                      className="h-full object-contain"
+                    />
+                  </div>
+                  <p className="text-white/70 mb-4 line-clamp-3">{artist.bio}</p>
+                  <Link href={`/artists/${artist.id}`}>
+                    <Button variant="outline" className="border-white text-white hover:bg-white/10">
+                      View Profile <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
               ))}
             </div>
 

@@ -9,38 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      albums: {
-        Row: {
-          id: string
-          created_at: string
-          title: string
-          artist_id: string
-          release_year: number | null
-          cover_url: string | null
-          description: string | null
-          featured: boolean
-        }
-        Insert: {
-          id?: string
-          created_at?: string
-          title: string
-          artist_id: string
-          release_year?: number | null
-          cover_url?: string | null
-          description?: string | null
-          featured?: boolean
-        }
-        Update: {
-          id?: string
-          created_at?: string
-          title?: string
-          artist_id?: string
-          release_year?: number | null
-          cover_url?: string | null
-          description?: string | null
-          featured?: boolean
-        }
-      }
       artists: {
         Row: {
           id: string
@@ -120,7 +88,39 @@ export interface Database {
           featured?: boolean
         }
       }
-       tracks: {
+      albums: {
+        Row: {
+          id: string
+          created_at: string
+          title: string
+          artist_id: string
+          release_year: number | null
+          cover_url: string | null
+          description: string | null
+          featured: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          title: string
+          artist_id: string
+          release_year?: number | null
+          cover_url?: string | null
+          description?: string | null
+          featured?: boolean
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          title?: string
+          artist_id?: string
+          release_year?: number | null
+          cover_url?: string | null
+          description?: string | null
+          featured?: boolean
+        }
+      }
+      tracks: {
         Row: {
           id: string
           created_at: string
@@ -155,7 +155,7 @@ export interface Database {
           featured?: boolean
         }
       }
-       live_sets: {
+      live_sets: {
         Row: {
           id: string
           created_at: string
@@ -211,3 +211,9 @@ export interface Database {
     }
   }
 }
+
+export type Artist = Database["public"]["Tables"]["artists"]["Row"]
+export type Event = Database["public"]["Tables"]["events"]["Row"]
+export type Album = Database["public"]["Tables"]["albums"]["Row"]
+export type Track = Database["public"]["Tables"]["tracks"]["Row"]
+export type LiveSet = Database["public"]["Tables"]["live_sets"]["Row"]

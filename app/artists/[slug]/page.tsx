@@ -97,7 +97,7 @@ export default function ArtistPage() {
         {
           id: "caiiro",
           name: "Caiiro",
-          logo: "/images/caiiro-logo-white.png",
+          logo: "/images/caiiro-logo-branco.png",
           image: "/images/dj-performance-1.png",
           secondaryImage: "/images/caiiro-new-photo.jpeg",
           bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets.",
@@ -175,7 +175,7 @@ export default function ArtistPage() {
         {
           id: "dacapo",
           name: "Da Capo",
-          logo: "/images/Da-Capo-logo-white.png",
+          logo: "/images/logo-branco-da-capo.png",
           image: "/images/dj-white-shirt.png",
           secondaryImage: "/images/dj-white-shirt.png",
           bio: "A visionary in Afro House and Deep Tech, known for rich, layered productions.",
@@ -253,7 +253,7 @@ export default function ArtistPage() {
         {
           id: "enoonapa",
           name: "Enoo Napa",
-          logo: "/images/enoo-napa-logo-white.png",
+          logo: "/images/logo-branco-enoo-napa.png",
           image: "/images/dj-red-light.png",
           secondaryImage: "/images/dj-red-light.png",
           bio: "Delivers cutting-edge Afro-Electronic music with a signature edge.",
@@ -395,17 +395,17 @@ export default function ArtistPage() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-            <div className="mb-6 h-20 flex items-center">
+            <div className="h-20 mb-6">
               <img
                 src={
-                  artist.id === "caiiro"
-                    ? "/images/caiiro-white-logo.png"
-                    : artist.id === "dacapo"
-                      ? "/images/Da-Capo-logo-white.png"
-                      : "/images/enoo-napa-logo-white.png"
+                  params.slug === "caiiro"
+                    ? "/images/caiiro-logo-branco.png"
+                    : params.slug === "dacapo"
+                      ? "/images/logo-branco-da-capo.png"
+                      : "/images/logo-branco-enoo-napa.png"
                 }
-                alt={artist.name}
-                className="h-auto max-h-20 w-auto object-contain"
+                alt={`${artist.name} logo`}
+                className="h-full object-contain"
               />
             </div>
 

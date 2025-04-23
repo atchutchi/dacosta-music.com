@@ -232,7 +232,7 @@ export default function B3BPage() {
                   className="w-full h-48 object-cover rounded-lg mb-4"
                 />
                 <div className="h-12 flex items-center mb-4">
-                  <img src="/images/caiiro-white-logo.png" alt="Caiiro" className="h-full object-contain" />
+                  <img src="/images/caiiro-logo-branco.png" alt="Caiiro" className="h-full object-contain" />
                 </div>
                 {/* Nome removido */}
                 <p className="text-white/80 mb-4">
@@ -252,7 +252,7 @@ export default function B3BPage() {
                   className="w-full h-48 object-cover rounded-lg mb-4"
                 />
                 <div className="h-12 flex items-center mb-4">
-                  <img src="/images/Da-Capo-logo-white.png" alt="Da Capo" className="h-full object-contain" />
+                  <img src="/images/logo-branco-da-capo.png" alt="Da Capo" className="h-full object-contain" />
                 </div>
                 {/* Nome removido */}
                 <p className="text-white/80 mb-4">
@@ -272,7 +272,7 @@ export default function B3BPage() {
                   className="w-full h-48 object-cover rounded-lg mb-4"
                 />
                 <div className="h-12 flex items-center mb-4">
-                  <img src="/images/enoo-napa-logo-white.png" alt="Enoo Napa" className="h-full object-contain" />
+                  <img src="/images/logo-branco-enoo-napa.png" alt="Enoo Napa" className="h-full object-contain" />
                 </div>
                 {/* Nome removido */}
                 <p className="text-white/80 mb-4">
@@ -403,6 +403,27 @@ export default function B3BPage() {
           <Link href="/#contact">
             <Button className="bg-white text-black hover:bg-white/90">Contact Booking Team</Button>
           </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="text-center">
+            <div className="h-16 mb-4 flex items-center justify-center">
+              <img src="/images/caiiro-logo-branco.png" alt="Caiiro" className="h-full object-contain" />
+            </div>
+            <p className="text-white/70">Emotionally charged soundscapes and powerful Afro-Tech sets</p>
+          </div>
+          <div className="text-center">
+            <div className="h-16 mb-4 flex items-center justify-center">
+              <img src="/images/logo-branco-da-capo.png" alt="Da Capo" className="h-full object-contain" />
+            </div>
+            <p className="text-white/70">Rich, layered productions and refined musical storytelling</p>
+          </div>
+          <div className="text-center">
+            <div className="h-16 mb-4 flex items-center justify-center">
+              <img src="/images/logo-branco-enoo-napa.png" alt="Enoo Napa" className="h-full object-contain" />
+            </div>
+            <p className="text-white/70">Raw energy and futuristic sounds with a signature edge</p>
+          </div>
         </div>
       </div>
     </div>
