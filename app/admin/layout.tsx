@@ -1,26 +1,49 @@
+"use client"
+
 import type React from "react"
-import { Toaster } from "@/components/ui/toaster"
-import AdminSidebar from "@/components/admin/admin-sidebar"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
+import { createClientClient } from "@/lib/supabase/client"
 
-// Adicionar esta configuração para evitar pré-renderização durante o build
-export const dynamic = "force-dynamic"
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+  const supabase = createClientClient()
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+  useEffect(() => {
+    async function checkAuth() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (!session) {
+        router.push("/login")
+      } else {
+        setIsLoading(false)
+      }
+    }
+
+    checkAuth()
+  }, [router, supabase])
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-gray-100">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
-      <div className="w-full md:w-64">
-        <AdminSidebar />
-      </div>
-      <div className="flex flex-1 flex-col">
+    <div className="flex h-screen bg-gray-100">
+      <AdminSidebar />
+      <div className="flex flex-1 flex-col overflow-hidden">
         <AdminHeader />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
-      <Toaster />
     </div>
   )
 }

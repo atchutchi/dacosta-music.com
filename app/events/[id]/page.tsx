@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { createServerClient } from "@/lib/supabase/server"
+import { createServerClient } from "@/lib/supabase/app-server"
 import { Button } from "@/components/ui/button"
 import { Calendar, MapPin, Clock, Ticket } from "lucide-react"
 import Link from "next/link"

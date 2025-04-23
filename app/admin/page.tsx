@@ -1,40 +1,67 @@
 "use client"
 
-import { createServerClient } from "@/lib/supabase/server"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Calendar, Music, Disc } from "lucide-react"
+import { createClientClient } from "@/lib/supabase/client"
 
 // Adicionar esta configuração para evitar pré-renderização durante o build
 export const dynamic = "force-dynamic"
 
-export default async function AdminPage() {
-  const supabase = createServerClient()
+export default function AdminDashboard() {
+  const [stats, setStats] = useState([
+    { name: "Artistas", value: 0, icon: Users, color: "bg-blue-100 text-blue-600" },
+    { name: "Eventos", value: 0, icon: Calendar, color: "bg-green-100 text-green-600" },
+    { name: "Álbuns", value: 0, icon: Disc, color: "bg-purple-100 text-purple-600" },
+    { name: "Faixas", value: 0, icon: Music, color: "bg-amber-100 text-amber-600" },
+  ])
+  const [recentEvents, setRecentEvents] = useState<any[]>([])
+  const [artists, setArtists] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Buscar estatísticas
-  const [{ count: artistsCount }, { count: eventsCount }, { count: albumsCount }, { count: tracksCount }] =
-    await Promise.all([
-      supabase.from("artists").select("*", { count: "exact", head: true }),
-      supabase.from("events").select("*", { count: "exact", head: true }),
-      supabase.from("albums").select("*", { count: "exact", head: true }),
-      supabase.from("tracks").select("*", { count: "exact", head: true }),
-    ])
+  useEffect(() => {
+    async function fetchData() {
+      const supabase = createClientClient()
 
-  // Buscar eventos recentes
-  const { data: recentEvents } = await supabase
-    .from("events")
-    .select("*")
-    .order("start_date", { ascending: true })
-    .limit(5)
+      try {
+        // Buscar estatísticas
+        const [{ count: artistsCount }, { count: eventsCount }, { count: albumsCount }, { count: tracksCount }] =
+          await Promise.all([
+            supabase.from("artists").select("*", { count: "exact", head: true }),
+            supabase.from("events").select("*", { count: "exact", head: true }),
+            supabase.from("albums").select("*", { count: "exact", head: true }),
+            supabase.from("tracks").select("*", { count: "exact", head: true }),
+          ])
 
-  // Buscar artistas
-  const { data: artists } = await supabase.from("artists").select("*").limit(5)
+        // Atualizar estatísticas
+        setStats([
+          { name: "Artistas", value: artistsCount || 0, icon: Users, color: "bg-blue-100 text-blue-600" },
+          { name: "Eventos", value: eventsCount || 0, icon: Calendar, color: "bg-green-100 text-green-600" },
+          { name: "Álbuns", value: albumsCount || 0, icon: Disc, color: "bg-purple-100 text-purple-600" },
+          { name: "Faixas", value: tracksCount || 0, icon: Music, color: "bg-amber-100 text-amber-600" },
+        ])
 
-  const stats = [
-    { name: "Artistas", value: artistsCount || 0, icon: Users, color: "bg-blue-100 text-blue-600" },
-    { name: "Eventos", value: eventsCount || 0, icon: Calendar, color: "bg-green-100 text-green-600" },
-    { name: "Álbuns", value: albumsCount || 0, icon: Disc, color: "bg-purple-100 text-purple-600" },
-    { name: "Faixas", value: tracksCount || 0, icon: Music, color: "bg-amber-100 text-amber-600" },
-  ]
+        // Buscar eventos recentes
+        const { data: events } = await supabase
+          .from("events")
+          .select("*")
+          .order("start_date", { ascending: true })
+          .limit(5)
+
+        setRecentEvents(events || [])
+
+        // Buscar artistas
+        const { data: artistsData } = await supabase.from("artists").select("*").limit(5)
+        setArtists(artistsData || [])
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <div className="space-y-6">
@@ -69,7 +96,11 @@ export default async function AdminPage() {
           <CardDescription>Lista dos próximos eventos agendados</CardDescription>
         </CardHeader>
         <CardContent>
-          {recentEvents && recentEvents.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center py-4">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+            </div>
+          ) : recentEvents && recentEvents.length > 0 ? (
             <div className="space-y-4">
               {recentEvents.map((event) => (
                 <div key={event.id} className="flex items-center justify-between border-b pb-4 last:border-0">
@@ -102,7 +133,11 @@ export default async function AdminPage() {
           <CardDescription>Lista dos artistas cadastrados</CardDescription>
         </CardHeader>
         <CardContent>
-          {artists && artists.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center py-4">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+            </div>
+          ) : artists && artists.length > 0 ? (
             <div className="space-y-4">
               {artists.map((artist) => (
                 <div key={artist.id} className="flex items-center space-x-4 border-b pb-4 last:border-0">

@@ -4,8 +4,9 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
+import { createClientClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,7 +20,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
+  const supabase = createClientClient()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,7 +28,7 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
@@ -37,8 +38,11 @@ export default function LoginPage() {
         return
       }
 
-      router.push("/admin")
-      router.refresh()
+      if (data?.user) {
+        console.log("Login bem-sucedido:", data.user)
+        router.push("/admin")
+        router.refresh()
+      }
     } catch (err) {
       setError("Ocorreu um erro ao fazer login. Tente novamente.")
       console.error(err)
@@ -48,22 +52,30 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>Entre com suas credenciais para acessar o painel administrativo</CardDescription>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4">
+      <div className="mb-8 w-full max-w-[200px]">
+        <Image src="/images/logo-white.png" alt="Da Costa Music" width={200} height={80} className="w-full" priority />
+      </div>
+
+      <Card className="w-full max-w-md border-gray-800 bg-black text-white">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl text-white">Login</CardTitle>
+          <CardDescription className="text-gray-400">
+            Entre com suas credenciais para acessar o painel administrativo
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="border-red-800 bg-red-950 text-red-300">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-gray-300">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -71,12 +83,15 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="border-gray-700 bg-gray-900 text-white"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Senha</Label>
-                <Link href="/reset-password" className="text-sm text-gray-600 hover:text-gray-900">
+                <Label htmlFor="password" className="text-gray-300">
+                  Senha
+                </Label>
+                <Link href="/reset-password" className="text-sm text-gray-400 hover:text-white">
                   Esqueceu a senha?
                 </Link>
               </div>
@@ -86,16 +101,17 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="border-gray-700 bg-gray-900 text-white"
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-white text-black hover:bg-gray-200" disabled={loading}>
               {loading ? "Entrando..." : "Entrar"}
             </Button>
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-gray-400">
               Não tem uma conta?{" "}
-              <Link href="/register" className="text-primary hover:underline">
+              <Link href="/register" className="text-white hover:underline">
                 Registre-se
               </Link>
             </p>

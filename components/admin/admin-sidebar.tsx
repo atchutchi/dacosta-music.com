@@ -1,71 +1,121 @@
 "use client"
 
+import type React from "react"
+
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Users, Calendar, Music, Disc, Radio, Settings, User, LogOut, ShoppingBag } from "lucide-react"
+import Image from "next/image"
+import { LayoutDashboard, Users, Calendar, Music, Disc, Radio, Settings, Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
 
-export default function AdminSidebar() {
+interface NavItemProps {
+  href: string
+  icon: React.ReactNode
+  label: string
+  isActive: boolean
+  onClick?: () => void
+}
+
+function NavItem({ href, icon, label, isActive, onClick }: NavItemProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex items-center gap-3 rounded-lg px-3 py-2 transition-all",
+        isActive ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white",
+      )}
+      onClick={onClick}
+    >
+      {icon}
+      <span>{label}</span>
+    </Link>
+  )
+}
+
+export function AdminSidebar() {
   const pathname = usePathname()
-  const router = useRouter()
-  const supabase = createClient()
+  const [isOpen, setIsOpen] = useState(false)
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen)
   }
 
-  const isActive = (path: string) => {
-    return pathname === path || pathname.startsWith(`${path}/`)
+  const closeSidebar = () => {
+    setIsOpen(false)
   }
-
-  const menuItems = [
-    { icon: Home, label: "Dashboard", href: "/admin" },
-    { icon: Users, label: "Artistas", href: "/admin/artists" },
-    { icon: Calendar, label: "Eventos", href: "/admin/events" },
-    { icon: Disc, label: "Álbuns", href: "/admin/albums" },
-    { icon: Music, label: "Faixas", href: "/admin/tracks" },
-    { icon: Radio, label: "Live Sets", href: "/admin/live-sets" },
-    { icon: ShoppingBag, label: "Loja", href: "/admin/shop" },
-    { icon: Settings, label: "Configurações", href: "/admin/settings" },
-    { icon: User, label: "Perfil", href: "/admin/profile" },
-  ]
 
   return (
-    <div className="flex h-full flex-col border-r bg-background">
-      <div className="flex h-14 items-center border-b px-4">
-        <Link href="/admin" className="flex items-center gap-2 font-semibold">
-          <span className="text-xl">Da Costa Music</span>
-        </Link>
-      </div>
-      <div className="flex-1 overflow-auto py-2">
-        <nav className="grid items-start px-2 text-sm font-medium">
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
-                isActive(item.href) ? "bg-gray-100 text-gray-900" : "",
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          ))}
-          <Button
-            variant="ghost"
-            className="flex w-full items-center justify-start gap-3 px-3 py-2 text-sm font-medium text-red-500"
-            onClick={handleSignOut}
-          >
-            <LogOut className="h-4 w-4" />
-            Sair
-          </Button>
+    <>
+      {/* Mobile toggle button */}
+      <Button variant="ghost" size="icon" className="fixed left-4 top-4 z-50 md:hidden" onClick={toggleSidebar}>
+        {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+      </Button>
+
+      {/* Sidebar */}
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 w-64 transform bg-gray-900 p-4 transition-transform duration-200 ease-in-out md:relative md:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <div className="mb-8 flex items-center justify-center">
+          <Image src="/images/logo-white.png" alt="Da Costa Music" width={150} height={60} className="h-auto w-auto" />
+        </div>
+
+        <nav className="space-y-1">
+          <NavItem
+            href="/admin"
+            icon={<LayoutDashboard className="h-5 w-5" />}
+            label="Dashboard"
+            isActive={pathname === "/admin"}
+            onClick={closeSidebar}
+          />
+          <NavItem
+            href="/admin/artists"
+            icon={<Users className="h-5 w-5" />}
+            label="Artistas"
+            isActive={pathname?.startsWith("/admin/artists")}
+            onClick={closeSidebar}
+          />
+          <NavItem
+            href="/admin/albums"
+            icon={<Disc className="h-5 w-5" />}
+            label="Álbuns"
+            isActive={pathname?.startsWith("/admin/albums")}
+            onClick={closeSidebar}
+          />
+          <NavItem
+            href="/admin/tracks"
+            icon={<Music className="h-5 w-5" />}
+            label="Faixas"
+            isActive={pathname?.startsWith("/admin/tracks")}
+            onClick={closeSidebar}
+          />
+          <NavItem
+            href="/admin/events"
+            icon={<Calendar className="h-5 w-5" />}
+            label="Eventos"
+            isActive={pathname?.startsWith("/admin/events")}
+            onClick={closeSidebar}
+          />
+          <NavItem
+            href="/admin/live-sets"
+            icon={<Radio className="h-5 w-5" />}
+            label="Live Sets"
+            isActive={pathname?.startsWith("/admin/live-sets")}
+            onClick={closeSidebar}
+          />
+          <NavItem
+            href="/admin/settings"
+            icon={<Settings className="h-5 w-5" />}
+            label="Configurações"
+            isActive={pathname?.startsWith("/admin/settings")}
+            onClick={closeSidebar}
+          />
         </nav>
       </div>
-    </div>
+    </>
   )
 }

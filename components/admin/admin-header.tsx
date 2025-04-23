@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
-import type { User } from "@supabase/supabase-js"
+import { Bell, Settings, User } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,72 +11,63 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Bell, LogOut, Settings, UserIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { createClientClient } from "@/lib/supabase/client"
 
-interface AdminHeaderProps {
-  user: User
-}
-
-// Alterando de export default para export const
-export const AdminHeader = ({ user }: AdminHeaderProps) => {
+export function AdminHeader() {
+  const [userName, setUserName] = useState<string>("Administrador")
   const router = useRouter()
-  const supabase = createClient()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const supabase = createClientClient()
+
+  useEffect(() => {
+    async function getUserProfile() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user?.user_metadata?.name) {
+        setUserName(user.user_metadata.name)
+      } else if (user?.email) {
+        setUserName(user.email.split("@")[0])
+      }
+    }
+
+    getUserProfile()
+  }, [supabase])
 
   const handleLogout = async () => {
-    setIsLoggingOut(true)
     await supabase.auth.signOut()
     router.push("/login")
     router.refresh()
   }
 
-  // Obter as iniciais do email do usuário
-  const getInitials = (email: string) => {
-    return email.substring(0, 2).toUpperCase()
-  }
-
   return (
-    <header className="border-b bg-white p-4 shadow-sm">
+    <header className="border-b bg-white p-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold md:text-2xl">Painel Administrativo</h1>
-
+        <h1 className="text-xl font-semibold">Painel Administrativo</h1>
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
           </Button>
-
+          <Button variant="ghost" size="icon" onClick={() => router.push("/admin/settings")}>
+            <Settings className="h-5 w-5" />
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.user_metadata.avatar_url || "/placeholder.svg"} alt={user.email || ""} />
-                  <AvatarFallback>{getInitials(user.email || "User")}</AvatarFallback>
-                </Avatar>
+              <Button variant="ghost" className="flex items-center space-x-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
+                  <User className="h-4 w-4" />
+                </div>
+                <span>{userName}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user.user_metadata.full_name || user.email}</p>
-                  <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                </div>
-              </DropdownMenuLabel>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/admin/profile")}>
-                <UserIcon className="mr-2 h-4 w-4" />
-                <span>Perfil</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push("/admin/settings")}>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Configurações</span>
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/admin/profile")}>Perfil</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/admin/settings")}>Configurações</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>{isLoggingOut ? "Saindo..." : "Sair"}</span>
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

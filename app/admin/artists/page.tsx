@@ -1,7 +1,8 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { createServerClient } from "@/lib/supabase/server"
+import { createClientClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Pencil, Trash2 } from "lucide-react"
@@ -9,14 +10,29 @@ import { Plus, Pencil, Trash2 } from "lucide-react"
 // Adicionar esta configuração para evitar pré-renderização durante o build
 export const dynamic = "force-dynamic"
 
-export default async function ArtistsAdminPage() {
-  const supabase = createServerClient()
+export default function ArtistsAdminPage() {
+  const [artists, setArtists] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const { data: artists, error } = await supabase.from("artists").select("*").order("name")
+  useEffect(() => {
+    async function fetchArtists() {
+      try {
+        const supabase = createClientClient()
+        const { data, error } = await supabase.from("artists").select("*").order("name")
 
-  if (error) {
-    console.error("Erro ao buscar artistas:", error)
-  }
+        if (error) throw error
+        setArtists(data || [])
+      } catch (err: any) {
+        console.error("Erro ao buscar artistas:", err)
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchArtists()
+  }, [])
 
   return (
     <div className="space-y-6">
@@ -34,7 +50,13 @@ export default async function ArtistsAdminPage() {
           <CardTitle>Lista de Artistas</CardTitle>
         </CardHeader>
         <CardContent>
-          {artists && artists.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center py-4">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+            </div>
+          ) : error ? (
+            <p className="text-center text-red-500">Erro ao carregar artistas: {error}</p>
+          ) : artists && artists.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
                 <thead>

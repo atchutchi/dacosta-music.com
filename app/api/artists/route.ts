@@ -1,27 +1,27 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
-
-// Criar cliente Supabase para API routes
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
+import { createServerClient } from "@/lib/supabase/app-server"
 
 export async function GET() {
-  try {
-    // Buscar todos os artistas com suas estatísticas
-    const { data: artists, error } = await supabase
-      .from("artists")
-      .select(`
-        *,
-        artist_stats (*)
-      `)
-      .order("name")
+  const supabase = createServerClient()
 
-    if (error) {
-      throw error
-    }
+  const { data, error } = await supabase.from("artists").select("*").order("name")
 
-    return NextResponse.json(artists)
-  } catch (error) {
-    console.error("Erro ao buscar artistas:", error)
-    return NextResponse.json({ error: "Erro ao buscar artistas" }, { status: 500 })
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  return NextResponse.json(data)
+}
+
+export async function POST(request: Request) {
+  const supabase = createServerClient()
+  const data = await request.json()
+
+  const { data: artist, error } = await supabase.from("artists").insert([data]).select().single()
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json(artist)
 }

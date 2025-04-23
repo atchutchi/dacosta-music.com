@@ -1,39 +1,42 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
-
-// Criar cliente Supabase para API routes
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
+import { createServerClient } from "@/lib/supabase/app-server"
 
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
-  try {
-    const { slug } = params
+  const supabase = createServerClient()
+  const { slug } = params
 
-    // Buscar artista pelo slug
-    const { data: artist, error } = await supabase
-      .from("artists")
-      .select(`
-        *,
-        artist_stats (*),
-        albums:albums (
-          *,
-          tracks:tracks (*)
-        ),
-        live_sets:live_sets (*)
-      `)
-      .eq("slug", slug)
-      .single()
+  const { data, error } = await supabase.from("artists").select("*").eq("slug", slug).single()
 
-    if (error) {
-      throw error
-    }
-
-    if (!artist) {
-      return NextResponse.json({ error: "Artista não encontrado" }, { status: 404 })
-    }
-
-    return NextResponse.json(artist)
-  } catch (error) {
-    console.error("Erro ao buscar artista:", error)
-    return NextResponse.json({ error: "Erro ao buscar artista" }, { status: 500 })
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  return NextResponse.json(data)
+}
+
+export async function PUT(request: Request, { params }: { params: { slug: string } }) {
+  const supabase = createServerClient()
+  const { slug } = params
+  const data = await request.json()
+
+  const { data: artist, error } = await supabase.from("artists").update(data).eq("slug", slug).select().single()
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json(artist)
+}
+
+export async function DELETE(request: Request, { params }: { params: { slug: string } }) {
+  const supabase = createServerClient()
+  const { slug } = params
+
+  const { error } = await supabase.from("artists").delete().eq("slug", slug)
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ success: true })
 }

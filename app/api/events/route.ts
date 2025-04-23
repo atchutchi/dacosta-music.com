@@ -1,47 +1,42 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
+import { createServerClient } from "@/lib/supabase/app-server"
 
-// Criar cliente Supabase para API routes
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
+export async function GET() {
+  const supabase = createServerClient()
 
-export async function GET(request: Request) {
-  try {
-    const url = new URL(request.url)
-    const month = url.searchParams.get("month")
-    const year = url.searchParams.get("year")
+  const { data, error } = await supabase.from("events").select("*").order("start_date")
 
-    let query = supabase
-      .from("events")
-      .select(`
-        *,
-        event_artists (
-          artists:artist_id (
-            id,
-            name,
-            slug,
-            logo_url
-          )
-        )
-      `)
-      .order("start_date")
-
-    // Filtrar por mês e ano se fornecidos
-    if (month && year) {
-      const startDate = new Date(Number.parseInt(year), Number.parseInt(month) - 1, 1)
-      const endDate = new Date(Number.parseInt(year), Number.parseInt(month), 0)
-
-      query = query.gte("start_date", startDate.toISOString()).lte("start_date", endDate.toISOString())
-    }
-
-    const { data: events, error } = await query
-
-    if (error) {
-      throw error
-    }
-
-    return NextResponse.json(events)
-  } catch (error) {
-    console.error("Erro ao buscar eventos:", error)
-    return NextResponse.json({ error: "Erro ao buscar eventos" }, { status: 500 })
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  return NextResponse.json(data)
+}
+
+export async function POST(request: Request) {
+  const supabase = createServerClient()
+  const data = await request.json()
+
+  // Inserir evento
+  const { data: event, error } = await supabase.from("events").insert([data]).select().single()
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  // Se houver artistas associados, inserir na tabela de relacionamento
+  if (data.artists && data.artists.length > 0 && event) {
+    const eventArtists = data.artists.map((artistId: string) => ({
+      event_id: event.id,
+      artist_id: artistId,
+    }))
+
+    const { error: relationError } = await supabase.from("event_artists").insert(eventArtists)
+
+    if (relationError) {
+      return NextResponse.json({ error: relationError.message }, { status: 500 })
+    }
+  }
+
+  return NextResponse.json(event)
 }
